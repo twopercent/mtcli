@@ -28,10 +28,17 @@ print("\nNow for child in root, print child.tag and child.attrib")
 for child in root:
     print (child.tag, child.attrib)
 
-print(root[0][0].text)
-print(root[0][1].text)
-print(root[1][0].text)
-print(root[1][1].text)
+print("\nfor elem in iter on tree")
+iter_ = tree.getiterator()
+for elem in iter_:
+    print(elem.tag)
+
+appointments = root.getchildren()
+print ("\nfor child in children on tree.getchildren()")
+for appointment in appointments:
+    appt_children = appointment.getchildren()
+    for appt_child in appt_children:
+        print(appt_child.tag, appt_child.text)
 
 stops = urllib.request.urlopen('http://svc.metrotransit.org/NexTrip/Stops/' + busNum + '/2')
 data = stops.read()
@@ -41,10 +48,4 @@ f.close()
 
 tree = ET.parse('stops.xml')
 root = tree.getroot()
-for child in root:
-    print(child.tag, child.attrib)
 
-print(root[0][0].text)
-print(root[0][1].text)
-print(root[1][0].text)
-print(root[1][1].text)
