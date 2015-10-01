@@ -22,7 +22,7 @@ def getlocations (busNum):
     print("This is what I think the answer should be")
     for vehicle in root:
         lat = vehicle.find('VehicleLatitude')
-        lon = vehicle.find('VehicleLongitude').text
+        lon = vehicle.find('VehicleLongitude')
         print('lat lon are ' + str(lat) + str(lon))
     
     print("I know the data is there because I can access it")
