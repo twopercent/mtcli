@@ -1,4 +1,4 @@
-#!/usr/local/bin/python3
+#!/usr/bin/env python3
 #
 # A command line tool to get NextTrip information
 #
@@ -24,7 +24,11 @@ def getlocations (busNum):
         lat = vehicle.find('VehicleLatitude')
         lon = vehicle.find('VehicleLongitude')
         print('lat lon are ' + str(lat) + str(lon))
-    
+
+    print("This is a test section")
+    for vehicle in root.iter('Route'):
+        print(vehicle.text)
+
     print("I know the data is there because I can access it")
     for vehicle in root:
         lat = vehicle[8].text
@@ -49,6 +53,6 @@ def printXML (busNum):
 
 
 #bus = input('Please enter bus number or \"0\" for all: ')
-bus = '444'
-printXML(bus)
+bus = '6'
+#printXML(bus)
 getlocations(bus)
