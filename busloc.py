@@ -9,11 +9,13 @@
 # Lets grab some sample bus data
 
 import urllib.request
+import urllib.parse
 import xml.etree.ElementTree as ET
 import xml.dom.minidom as MD
 #from geojson import MultiPoint
 import geojson
 #import json
+import webbrowser
 
 def getlocations (busNum):
     "This function takes a route number and writes a GeoJSON Multipoint array of vehicle locations"
@@ -21,27 +23,28 @@ def getlocations (busNum):
     locations = urllib.request.urlopen('http://svc.metrotransit.org/NexTrip/VehicleLocations/' + busNum)
     root = ET.fromstring(locations.read())
 
-    f = open('vehicles.geojson', 'wb')
-    
-    mp_list = []
+    point_list = []
 
     for vehicle in root:
-        point = {
-            'type': 'MultiPoint',
-            'coordinates': [[vehicle[9].text], [vehicle[8].text]]
+        point = [float(vehicle[9].text), float(vehicle[8].text)]
+        point_list.append(point)
+
+    multipoint_array = {
+        "type": "MultiPoint",
+        "coordinates": point_list,
         }
-        mp_list.append(point)
+    
+    multipointstring = geojson.dumps(multipoint_array)
+    
+    return(multipointstring)
 
-    mp_thing = geojson.dumps(mp_list)
-    #json.dumps(mp_list, f)
-    print(mp_thing)
+def openMap (MultiPoint):
+    "This funtions takes a MultiPoint GeoJSON object and opens a map of its points"
 
-    #f.write('{ "type": "MultiPoint",\n\t"coordinates": [ ')
-    #for vehicle in root:
-    #    f.write("[" + vehicle[8].text + ", " + vehicle[9].text + "], ")
-    #f.write(' ]\n\t]\n}')
+    params = urllib.parse.quote(str(MultiPoint))
+    url = ("http://geojson.io/#data=data:application/json,%s" % params)
+    webbrowser.open_new_tab(url)
 
-    f.close()
 
 def getlocationstest (busNum):
     "This function takes a route number and writes a GeoJSON Multipoint array of vehicle locations"
@@ -96,7 +99,10 @@ def printXML (busNum):
     print(xml.toprettyxml())
 
 
-#bus = input('Please enter bus number or \"0\" for all: ')
-bus = '6'
+bus = input('Please enter bus number or \"0\" for all: ')
 #printXML(bus)
-getlocations(bus)
+mp_string = getlocations(bus)
+print(mp_string)
+
+openMap(mp_string)
+
